@@ -206,7 +206,6 @@ async function completeTask(taskId: number, userId: number) {
     if (task.status === 'Completed') {
       throw new Error('Tarefas concluídas não podem ser editadas.');
     }
-    // Se for necessário alguma edição específica em uma tarefa concluída, adicione a lógica aqui.
   }
   
   // Função para criar uma nova tag
@@ -227,39 +226,3 @@ async function completeTask(taskId: number, userId: number) {
       where: { id: tagId },
     });
   }
-  
-  
-  // Exemplos de uso:
-  
-  // Marcar uma tarefa como concluída
-  // completeTask(taskId, userId);
-  
-  // Editar uma tarefa concluída
-  // editCompletedTask(taskId);
-  
-  // Criar uma nova tag
-  // createTag(title, taskId);
-  
-  // Deletar uma tag
-  // deleteTag(tagId);
-  
-  // Adicionar um membro a um projeto
-  // addMemberToProject(projectId, userId, creatorId);
-  
-  // Criar uma tarefa
-  // createTask(userId, projectId, title, description, tags);
-  
-  // Remover um membro de um projeto
-  // removeMemberFromProject(projectId, userId, creatorId);
-  
-  // Editar uma tarefa
-  // editTask(taskId, userId, title, description, tags, status);
-  
-  // Adicionar um usuário a um projeto
-  // addUserToProject(userId, projectId);
-
-main()
-  .catch((e) => console.error(e))
-  .finally(async () => await prisma.$disconnect())
-
-
