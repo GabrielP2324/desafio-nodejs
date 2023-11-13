@@ -1,22 +1,17 @@
 import { PrismaClient, TaskStatus } from '@prisma/client'
 import { fieldEncryptionExtension } from 'prisma-field-encryption'
+ 
+import express from 'express'
 
 const prisma = new PrismaClient()
+import bodyParser from 'body-parser';
 
+const app = express();
 
 export const client = prisma.$extends(
     // This is a function, don't forget to call it:
     fieldEncryptionExtension()
   )
-
-async function main() {
-  
-  const allUsers = await prisma.user.findMany(
-    
-  )
-  console.log('All users: ')
-  console.dir(allUsers, { depth: null })
-}
 
 async function addMemberToProject(projectId:number, userId:number, creatorId:number) {
     const project = await prisma.project.findUnique({
@@ -226,3 +221,114 @@ async function completeTask(taskId: number, userId: number) {
       where: { id: tagId },
     });
   }
+
+  app.listen(8000, () =>
+  console.log('REST API server ready at: http://localhost:3000'),
+)
+
+app.use(bodyParser.json());
+
+
+app.post('/addMemberToProject', async (req, res) => {
+  try {
+    const { projectId, userId, creatorId } = req.body;
+    await addMemberToProject(projectId, userId, creatorId);
+    res.status(200).json({ message: 'Member added to the project successfully' });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Create a task
+app.post('/createTask', async (req, res) => {
+  try {
+    const { userId, projectId, title, description, tags } = req.body;
+    const task = await createTask(userId, projectId, title, description, tags);
+    res.status(200).json(task);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Remove a member from a project
+app.post('/removeMemberFromProject', async (req, res) => {
+  try {
+    const { projectId, userId, creatorId } = req.body;
+    await removeMemberFromProject(projectId, userId, creatorId);
+    res.status(200).json({ message: 'Member removed from the project successfully' });
+  } catch (error:any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Edit a task
+app.put('/editTask/:taskId', async (req, res) => {
+  try {
+    const taskId = parseInt(req.params.taskId);
+    const { userId, title, description, tags, status } = req.body;
+    await editTask(taskId, userId, title, description, tags, status);
+    res.status(200).json({ message: 'Task edited successfully' });
+  } catch (error:any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Add a user to a project
+app.post('/addUserToProject', async (req, res) => {
+  try {
+    const { userId, projectId } = req.body;
+    await addUserToProject(userId, projectId);
+    res.status(200).json({ message: 'User added to the project successfully' });
+  } catch (error:any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Complete a task
+app.put('/completeTask/:taskId', async (req, res) => {
+  try {
+    const taskId = parseInt(req.params.taskId);
+    const { userId } = req.body;
+    await completeTask(taskId, userId);
+    res.status(200).json({ message: 'Task completed successfully' });
+  } catch (error:any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Edit a completed task
+app.put('/editCompletedTask/:taskId', async (req, res) => {
+  try {
+    const taskId = parseInt(req.params.taskId);
+    await editCompletedTask(taskId);
+    res.status(200).json({ message: 'Completed task cannot be edited' });
+  } catch (error:any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Create a new tag
+app.post('/createTag', async (req, res) => {
+  try {
+    const { title, taskId } = req.body;
+    const tag = await createTag(title, taskId);
+    res.status(200).json(tag);
+  } catch (error:any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete a tag
+app.delete('/deleteTag/:tagId', async (req, res) => {
+  try {
+    const tagId = parseInt(req.params.tagId);
+    await deleteTag(tagId);
+    res.status(200).json({ message: 'Tag deleted successfully' });
+  } catch (error:any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.listen(8000, () => {
+  console.log(`Server is running on port ${8000}`);
+});
