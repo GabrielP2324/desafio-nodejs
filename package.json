@@ -1,0 +1,22 @@
+{
+  "name": "desafio-nodejs",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">\r   <img title=\"a title\" alt=\"Alt text\" src=\"https://media.licdn.com/dms/image/D4E16AQGjCVuzlCthvg/profile-displaybackgroundimage-shrink_200_800/0/1690574706700?e=2147483647&v=beta&t=zlY1Mc10yQ3gA9qiZ4sZ7m8PkE-HIu8Haa1fUyKb_fU\">\r </p>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "prisma": "^5.5.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.5.2",
+    "prisma-field-encryption": "^1.5.0"
+  }
+}
